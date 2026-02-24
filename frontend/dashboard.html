@@ -1,0 +1,57 @@
+<div class="panel-body">
+    
+    <header class="panel-header">
+        <h1>🩺 Doc-Time Panel</h1>
+        <div class="user-info">
+    <span>Hola, Ricardo</span>
+    <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+</div>
+    </header>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Citas</h3>
+            <p>0</p>
+        </div>
+        <div class="stat-card secondary">
+            <h3>Próxima Cita</h3>
+            <p>Hoy, 4:00 PM</p>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>➕ Agendar Nueva Cita</h2>
+        <form class="appointment-form">
+            <input type="text" placeholder="Nombre del Paciente" />
+            <input type="datetime-local" />
+            <input type="text" placeholder="Motivo (Ej: Chequeo)" />
+            <button type="button" class="btn-add">Agendar Cita</button>
+        </form>
+    </section>
+
+    </section>
+
+
+    <section class="content-section">
+        <h2>📋 Lista de Citas</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Fecha y Hora</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #777;">Aún no hay citas registradas.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
