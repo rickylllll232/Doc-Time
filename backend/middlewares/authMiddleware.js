@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Ajusta la ruta a tu modelo de Usuario
+const User = require('../models/user'); // Ajusta la ruta a tu modelo de Usuario
 
 exports.protect = async (req, res, next) => {
     let token;
