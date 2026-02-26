@@ -1,4 +1,4 @@
-const API_URL = 'https://doc-time-api-mwwb.onrender.com/api';
+const API_URL = 'https://doc-time.onrender.com/api';
 // --- LÓGICA DE LOGIN ---
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
