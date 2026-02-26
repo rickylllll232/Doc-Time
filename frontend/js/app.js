@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
-
+const API_URL = 'https://TU-LINK-DE-RENDER.onrender.com/api';
 // --- LÓGICA DE LOGIN ---
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {

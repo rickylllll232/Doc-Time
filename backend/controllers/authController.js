@@ -1,5 +1,5 @@
 // backend/controllers/authController.js
-const User = require('../models/User'); // Importamos el modelo que creaste antes
+const User = require('../models/user'); // Importamos el modelo que creaste antes
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
