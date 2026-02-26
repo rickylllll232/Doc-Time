@@ -1,13 +1,18 @@
 /* =========================================
-   ESTILOS ORIGINALES (LOGIN) - INTACTOS
+   VARIABLES GLOBALES
    ========================================= */
 :root {
     --primary-blue: #0A74DA;
-    --text-color: #333;
+    --success-color: #20c997;
+    --danger-color: #ef4444;
+    --text-color: #333333;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
+/* =========================================
+   ESTILOS ORIGINALES (LOGIN) - INTACTOS
+   ========================================= */
 .login-body {
     display: flex;
     justify-content: center;
@@ -79,15 +84,35 @@ button:hover {
 .error-msg { color: #ff4d4d; font-size: 0.9rem; margin-top: 15px; display: block; }
 .forgot-pass { color: var(--primary-blue); text-decoration: none; font-size: 0.8rem; display: block; margin-top: 10px; }
 
+
 /* =========================================
    NUEVOS ESTILOS PARA EL PANEL (DASHBOARD)
    ========================================= */
-
-/* Fondo general del panel */
-.panel-body {
-    background-color: #f4f7f6; /* Un gris azulado muy suave */
-    padding: 30px;
+.dashboard-body {
+    /* Fondo médico semitransparente para el dashboard */
+    background: linear-gradient(rgba(227, 242, 253, 0.85), rgba(240, 244, 248, 0.9)),
+                url('https://img.freepik.com/free-vector/clean-medical-background_53876-97925.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
+    padding: 40px 20px; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--text-color);
+}
+
+/* Tarjeta principal azul cielo */
+.panel-body {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: rgba(186, 230, 253, 0.95); /* El azul cielo semitransparente */
+    border-radius: 30px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2); 
+    backdrop-filter: blur(10px); 
 }
 
 /* Barra superior (Header) */
@@ -95,86 +120,106 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
-    padding: 15px 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    margin-bottom: 30px;
+    background: transparent;
+    padding: 0 0 25px 0;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    margin-bottom: 35px;
 }
 
 .panel-header h1 {
     color: var(--primary-blue);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 15px;
-    font-weight: 600;
-    color: var(--text-color);
+    gap: 20px;
+    font-size: 1rem;
 }
 
-/* Sobreescribir el botón global para los botones del panel */
 .btn-logout {
-    background-color: #ff4d4d;
+    background-color: #ffe5e5;
+    color: var(--danger-color);
     width: auto;
     padding: 10px 20px;
     margin-top: 0;
     font-size: 0.9rem;
+    border-radius: 12px;
 }
-.btn-logout:hover { background-color: #e60000; }
-
-.btn-add {
-    background-color: #20c997; /* Verde menta vibrante */
-    width: auto;
-    margin-top: 0;
-    padding: 14px 25px;
+.btn-logout:hover { 
+    background-color: var(--danger-color); 
+    color: white;
 }
-.btn-add:hover { background-color: #1aa179; }
 
 /* Grid para las tarjetas de resumen (Stats) */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 35px;
 }
 
 .stat-card {
     background: linear-gradient(135deg, #0A74DA 0%, #00B4D8 100%);
     color: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(10, 116, 218, 0.2);
-    text-align: left;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(10, 116, 218, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(10, 116, 218, 0.3);
 }
 
 .stat-card.secondary {
-    background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%); /* Morado moderno */
-    box-shadow: 0 8px 20px rgba(74, 0, 224, 0.2);
+    background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    box-shadow: 0 15px 35px rgba(74, 0, 224, 0.2);
 }
 
-.stat-card h3 { font-size: 1.1rem; margin-bottom: 10px; font-weight: 400; opacity: 0.9; }
-.stat-card p { font-size: 2.2rem; font-weight: bold; }
+.stat-card.secondary:hover {
+    box-shadow: 0 20px 40px rgba(74, 0, 224, 0.3);
+}
+
+.stat-icon i {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+.stat-text h3 { 
+    font-size: 1.1rem; 
+    margin-bottom: 5px; 
+    font-weight: 400; 
+    opacity: 0.9; 
+}
+.stat-text p { font-size: 2.5rem; font-weight: 700; line-height: 1; }
 
 /* Secciones blancas para formularios y tablas */
 .content-section {
     background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    margin-bottom: 30px;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 35px;
 }
 
 .content-section h2 {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-bottom: 2px solid #f0f4f8;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 
 /* Formulario en línea */
@@ -187,8 +232,36 @@ button:hover {
 
 .appointment-form input {
     flex: 1;
-    min-width: 220px;
-    margin: 0; /* Quita el margen global para alinearlo bien */
+    min-width: 200px;
+    margin: 0;
+    padding: 14px 18px;
+    border: 2px solid #eef2f5;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.appointment-form input:focus {
+    border-color: var(--success-color);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(32, 201, 151, 0.1);
+}
+
+.btn-add {
+    background-color: var(--success-color);
+    width: auto;
+    margin-top: 0;
+    padding: 14px 28px;
+    border-radius: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: white;
+}
+.btn-add:hover { 
+    background-color: #1aa179; 
+    box-shadow: 0 8px 20px rgba(32, 201, 151, 0.3);
+    transform: translateY(-2px);
 }
 
 /* Estilos de la Tabla */
@@ -196,75 +269,115 @@ button:hover {
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-top: 10px;
 }
 
-thead {
-    background-color: var(--primary-blue);
-    color: white;
-}
-
-th, td {
-    padding: 15px;
+thead th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 18px 15px;
+    border-bottom: 2px solid #e2e8f0;
     text-align: left;
-    border-bottom: 1px solid #f0f0f0;
 }
 
-th:first-child { border-top-left-radius: 10px; }
-th:last-child { border-top-right-radius: 10px; }
+th:first-child { border-top-left-radius: 12px; }
+th:last-child { border-top-right-radius: 12px; }
+
+tbody td {
+    padding: 18px 15px;
+    color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
 
 tbody tr { transition: background-color 0.2s; }
-tbody tr:hover { background-color: #f8faff; }
+tbody tr:hover { background-color: #f8fafc; }
 
-/* =========================================
-   MEJORAS VISUALES FINALES (DASHBOARD)
-   ========================================= */
-
-/* Estilo para las filas de la tabla */
-tbody tr td {
-    color: #555;
-    font-size: 0.95rem;
-}
-
-/* Badge de estado (opcional por si quieres resaltar el "Pendiente") */
+/* Badges y Botones de Tabla */
 .status-badge {
-    background: #e1f5fe;
-    color: #0288d1;
-    padding: 5px 12px;
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-weight: 700;
 }
 
-/* Botones de acción dentro de la tabla (Eliminar/Editar) */
-.btn-action {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    width: auto;
-    margin: 0 2px;
+.btn-delete-row {
+    background-color: #fee2e2 !important;
+    color: var(--danger-color) !important;
+    border: none;
+    padding: 8px 15px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    width: auto !important;
+    margin: 0 !important;
 }
 
-.btn-delete {
-    background-color: #ffeded;
-    color: #ff4d4d;
-    border: 1px solid #ff4d4d;
+.btn-delete-row:hover {
+    background-color: var(--danger-color) !important;
+    color: white !important;
 }
 
-.btn-delete:hover {
-    background-color: #ff4d4d;
+/* Botón de Editar en la Tabla */
+.btn-edit-row {
+    background-color: #e0f2fe !important;
+    color: #0284c7 !important;
+    border: none;
+    padding: 8px 15px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    width: auto !important;
+    margin-right: 5px !important;
+}
+
+.btn-edit-row:hover {
+    background-color: #0284c7 !important;
+    color: white !important;
+}
+
+/* =========================================
+   SISTEMA DE NOTIFICACIONES (TOASTS)
+   ========================================= */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.toast {
+    background-color: #333;
     color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Ajuste para que los inputs no se vean tan grandes en el panel */
-.appointment-form input {
-    padding: 12px;
-    background-color: #fff;
-    border: 2px solid #f0f4f8;
+.toast.show {
+    transform: translateX(0);
 }
 
-.appointment-form input:focus {
-    border-color: #20c997;
-    box-shadow: 0 0 0 4px rgba(32, 201, 151, 0.1);
-}
+.toast.success { background-color: var(--success-color); } 
+.toast.info { background-color: var(--primary-blue); }    
+.toast.error { background-color: var(--danger-color); }
