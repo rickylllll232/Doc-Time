@@ -1,61 +1,47 @@
 const Cita = require('../models/Cita');
 
-// @desc    Obtener todas las citas
-// @route   GET /api/citas
-exports.obtenerCitas = async (req, res, next) => {
+// Obtener todas las citas
+exports.obtenerCitas = async (req, res) => {
     try {
-        // Busca todas las citas y las ordena por fecha (de la más próxima a la más lejana)
-        const citas = await Cita.find().sort({ fecha: 1 });
-        res.status(200).json({ success: true, count: citas.length, data: citas });
+        const citas = await Cita.find({ user: req.user.id });
+        res.status(200).json({ success: true, data: citas });
     } catch (error) {
-        next(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Crear una nueva cita
-// @route   POST /api/citas
-exports.crearCita = async (req, res, next) => {
+// Crear una nueva cita
+exports.crearCita = async (req, res) => {
     try {
-        const { nombre, fecha, motivo } = req.body;
-        const nuevaCita = await Cita.create({ nombre, fecha, motivo });
-        
-        res.status(201).json({ success: true, data: nuevaCita });
+        req.body.user = req.user.id;
+        const cita = await Cita.create(req.body);
+        res.status(201).json({ success: true, data: cita });
     } catch (error) {
-        next(error);
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Actualizar una cita existente
-// @route   PUT /api/citas/:id
-exports.actualizarCita = async (req, res, next) => {
+// Actualizar cita con PRECIO
+exports.actualizarCita = async (req, res) => {
     try {
-        const cita = await Cita.findByIdAndUpdate(req.params.id, req.body, {
-            new: true, // Devuelve el documento actualizado
-            runValidators: true // Verifica que cumpla las reglas del modelo
-        });
-
-        if (!cita) {
-            return res.status(404).json({ success: false, message: 'Cita no encontrada' });
-        }
-
+        const { nombre, fecha, motivo, precio } = req.body;
+        const cita = await Cita.findByIdAndUpdate(
+            req.params.id,
+            { nombre, fecha, motivo, precio: Number(precio) },
+            { new: true }
+        );
         res.status(200).json({ success: true, data: cita });
     } catch (error) {
-        next(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Eliminar una cita
-// @route   DELETE /api/citas/:id
-exports.eliminarCita = async (req, res, next) => {
+// Eliminar cita
+exports.eliminarCita = async (req, res) => {
     try {
-        const cita = await Cita.findByIdAndDelete(req.params.id);
-
-        if (!cita) {
-            return res.status(404).json({ success: false, message: 'Cita no encontrada' });
-        }
-
-        res.status(200).json({ success: true, message: 'Cita eliminada correctamente' });
+        await Cita.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, data: {} });
     } catch (error) {
-        next(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };

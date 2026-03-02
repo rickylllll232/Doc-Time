@@ -38,11 +38,12 @@
 
         <section class="content-section">
             <h2><i class="fa-solid fa-plus-circle"></i> Agendar Nueva Cita</h2>
-            <form class="appointment-form">
-                <input type="text" placeholder="Nombre del Paciente" required />
-                <input type="datetime-local" required />
-                <input type="text" placeholder="Motivo (Ej: Chequeo)" required />
-                <button type="button" class="btn-add"><i class="fa-solid fa-calendar-plus"></i> Agendar Cita</button>
+            <form class="appointment-form" id="formCita">
+                <input type="text" id="paciente" placeholder="Nombre del Paciente" required />
+                <input type="datetime-local" id="fecha" required />
+                <input type="text" id="motivo" placeholder="Motivo (Ej: Chequeo)" required />
+                <input type="number" id="precio" placeholder="Precio ($)" required />
+                <button type="submit" class="btn-add"><i class="fa-solid fa-calendar-plus"></i> Agendar Cita</button>
             </form>
         </section>
 
@@ -55,13 +56,13 @@
                             <th>Paciente</th>
                             <th>Fecha y Hora</th>
                             <th>Motivo</th>
-                            <th>Estado</th>
+                            <th>Precio</th> <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody id="appointmentsList">
                         <tr>
-                            <td colspan="5" style="text-align: center; color: #aaa; padding: 30px;">
+                            <td colspan="6" style="text-align: center; color: #aaa; padding: 30px;">
                                 <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                                 Aún no hay citas registradas.
                             </td>

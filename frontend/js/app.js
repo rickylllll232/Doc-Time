@@ -1,4 +1,5 @@
 const API_URL = 'https://doc-time.onrender.com/api';
+
 // --- LÓGICA DE LOGIN ---
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
@@ -6,7 +7,7 @@ if (loginForm) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const errorMsg = document.getElementById('errorMessage'); // Asegúrate de tener este ID en tu HTML o usa 'mensaje'
+        const errorMsg = document.getElementById('errorMessage') || document.getElementById('mensaje');
 
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
@@ -21,11 +22,9 @@ if (loginForm) {
                 localStorage.setItem('docTimeUser', JSON.stringify(data.user));
                 window.location.href = 'dashboard.html';
             } else {
-                // Si tienes un span con id="mensaje" en tu index.html
-                const msgElement = errorMsg || document.getElementById('mensaje');
-                if(msgElement) {
-                    msgElement.textContent = data.message;
-                    msgElement.style.display = 'block';
+                if(errorMsg) {
+                    errorMsg.textContent = data.message;
+                    errorMsg.style.display = 'block';
                 }
             }
         } catch (error) {
@@ -37,13 +36,13 @@ if (loginForm) {
 // --- LÓGICA DEL DASHBOARD ---
 const logoutBtn = document.getElementById('logoutBtn'); 
 const userNameDisplay = document.querySelector('.user-info span.user-greeting');
-const token = localStorage.getItem('docTimeToken'); // Obtenemos el token para usarlo en las peticiones
+const token = localStorage.getItem('docTimeToken'); 
 
 if (logoutBtn) {
     const user = JSON.parse(localStorage.getItem('docTimeUser'));
 
     if (!token) {
-        window.location.href = 'index.html'; // Protege la vista del dashboard
+        window.location.href = 'index.html'; 
     } else if (user && userNameDisplay) {
         userNameDisplay.innerHTML = `Hola, <strong>${user.nombre || 'Doctor'}</strong>`;
     }
@@ -62,10 +61,7 @@ function mostrarToast(mensaje, tipo = 'success') {
 
     const toast = document.createElement('div');
     toast.className = `toast ${tipo}`;
-    
-    let icono = 'fa-check-circle';
-    if (tipo === 'error') icono = 'fa-triangle-exclamation';
-    if (tipo === 'info') icono = 'fa-circle-info';
+    let icono = tipo === 'error' ? 'fa-triangle-exclamation' : (tipo === 'info' ? 'fa-circle-info' : 'fa-check-circle');
 
     toast.innerHTML = `<i class="fa-solid ${icono}"></i> <span>${mensaje}</span>`;
     contenedor.appendChild(toast);
@@ -77,85 +73,37 @@ function mostrarToast(mensaje, tipo = 'success') {
     }, 3000);
 }
 
-// --- SISTEMA DE CITAS CON BASE DE DATOS (MOGODB) ---
-let citas = []; // Ahora iniciará vacío y se llenará desde la BD
-let idEnEdicion = null; // Guardará el _id de MongoDB
+// --- SISTEMA DE CITAS ---
+let citas = []; 
+let idEnEdicion = null; 
 
-const apptForm = document.querySelector('.appointment-form'); 
+const apptForm = document.getElementById('formCita'); 
 const btnAdd = document.querySelector('.btn-add');
 const list = document.getElementById('appointmentsList');
 const totalDisplay = document.getElementById('totalCitas');
 
-// 🟢 FUNCIÓN PARA OBTENER CITAS DESDE EL BACKEND
 async function cargarCitas() {
     try {
-        const response = await fetch(`${API_URL}/citas`); // LECTURA: No requiere token
+        const response = await fetch(`${API_URL}/citas`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         const result = await response.json();
-        
         if (result.success) {
             citas = result.data;
             renderizarCitas();
         }
     } catch (error) {
         console.error("Error al cargar citas:", error);
-        mostrarToast("No se pudieron cargar las citas", "error");
     }
-}
-
-function actualizarProximaCita() {
-    const proximaCitaDisplay = document.getElementById('proximaCita');
-    if (!proximaCitaDisplay) return;
-
-    if (citas.length === 0) {
-        proximaCitaDisplay.textContent = 'Sin citas';
-        return;
-    }
-
-    const ahora = new Date();
-    const citasFuturas = citas.filter(cita => new Date(cita.fecha) >= ahora);
-
-    if (citasFuturas.length === 0) {
-        proximaCitaDisplay.textContent = 'Sin citas próximas';
-        return;
-    }
-
-    citasFuturas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-    const proxima = citasFuturas[0]; 
-    const fechaProxima = new Date(proxima.fecha);
-    const hoy = new Date();
-    const manana = new Date();
-    manana.setDate(hoy.getDate() + 1);
-
-    let textoFecha = '';
-    if (fechaProxima.toDateString() === hoy.toDateString()) {
-        textoFecha = 'Hoy';
-    } else if (fechaProxima.toDateString() === manana.toDateString()) {
-        textoFecha = 'Mañana';
-    } else {
-        textoFecha = fechaProxima.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
-    }
-
-    const textoHora = fechaProxima.toLocaleTimeString('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true });
-    proximaCitaDisplay.textContent = `${textoFecha}, ${textoHora}`;
 }
 
 function renderizarCitas() {
     if (!list) return;
     list.innerHTML = ''; 
-    
     if (totalDisplay) totalDisplay.textContent = citas.length;
-    actualizarProximaCita();
 
     if (citas.length === 0) {
-        list.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center; color: #aaa; padding: 30px;">
-                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                    Aún no hay citas registradas.
-                </td>
-            </tr>
-        `;
+        list.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #aaa; padding: 30px;">Aún no hay citas registradas.</td></tr>`;
         return;
     }
 
@@ -164,117 +112,93 @@ function renderizarCitas() {
         const fechaObj = new Date(cita.fecha);
         const fechaFormateada = fechaObj.toLocaleDateString() + ' ' + fechaObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-        // Usamos el _id de MongoDB para identificar la cita
         row.innerHTML = `
             <td><strong>${cita.nombre}</strong></td>
             <td>${fechaFormateada}</td>
             <td>${cita.motivo}</td>
-            <td><span class="status-badge"><i class="fa-solid fa-circle-dot" style="font-size:0.6rem; margin-right:4px;"></i> ${cita.estado || 'Pendiente'}</span></td>
+            <td>$${cita.precio || 0}</td>
+            <td><span class="status-badge">${cita.estado || 'Pendiente'}</span></td>
             <td>
-                <button class="btn-edit-row" onclick="editarCita(${index})" title="Editar cita"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-delete-row" onclick="eliminarCita('${cita._id}')" title="Eliminar cita"><i class="fa-solid fa-trash-can"></i></button>
+                <button class="btn-edit-row" onclick="editarCita(${index})"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-delete-row" onclick="eliminarCita('${cita._id}')"><i class="fa-solid fa-trash-can"></i></button>
             </td>
         `;
         list.appendChild(row);
     });
 }
 
-// 🔴 FUNCIÓN PARA ELIMINAR CITA EN EL BACKEND (Protegida)
+// ELIMINAR CITA
 window.eliminarCita = async function(id) {
-    if (confirm(`¿Estás seguro de que deseas eliminar esta cita?`)) {
+    if (confirm(`¿Eliminar esta cita?`)) {
         try {
             const response = await fetch(`${API_URL}/citas/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}` // Enviamos el Gafete (Token)
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            const result = await response.json();
-
-            if (result.success) {
-                mostrarToast('Cita eliminada correctamente', 'info'); 
-                cargarCitas(); // Recargamos la lista desde la BD
-            } else {
-                mostrarToast(result.message || 'Error al eliminar', 'error');
+            if ((await response.json()).success) {
+                mostrarToast('Cita eliminada', 'info'); 
+                cargarCitas();
             }
-        } catch (error) {
-            console.error(error);
-            mostrarToast('Error de conexión', 'error');
-        }
+        } catch (error) { mostrarToast('Error de conexión', 'error'); }
     }
 };
 
+// EDITAR CITA (Prepara el formulario)
 window.editarCita = function(index) {
-    const inputs = apptForm.querySelectorAll('input');
     const cita = citas[index];
+    document.getElementById('paciente').value = cita.nombre;
+    document.getElementById('fecha').value = new Date(cita.fecha).toISOString().slice(0, 16);
+    document.getElementById('motivo').value = cita.motivo;
+    document.getElementById('precio').value = cita.precio || '';
 
-    inputs[0].value = cita.nombre;
-    // Formatear la fecha para el input datetime-local (YYYY-MM-DDTHH:mm)
-    const fechaFormat = new Date(cita.fecha).toISOString().slice(0, 16);
-    inputs[1].value = fechaFormat;
-    inputs[2].value = cita.motivo;
-
-    idEnEdicion = cita._id; // Guardamos el ID real de la base de datos
-    
+    idEnEdicion = cita._id; 
     btnAdd.innerHTML = '<i class="fa-solid fa-save"></i> Guardar Cambios';
     btnAdd.style.backgroundColor = '#0A74DA';
 };
 
-// 🔴 FUNCIÓN PARA CREAR O ACTUALIZAR CITA EN EL BACKEND (Protegida)
+// CREAR O ACTUALIZAR CITA
 if (btnAdd && apptForm) {
     btnAdd.addEventListener('click', async (e) => {
         e.preventDefault();
         
-        const inputs = apptForm.querySelectorAll('input');
-        const nombre = inputs[0].value;
-        const fecha = inputs[1].value;
-        const motivo = inputs[2].value;
+        const nombre = document.getElementById('paciente').value;
+        const fecha = document.getElementById('fecha').value;
+        const motivo = document.getElementById('motivo').value;
+        const precio = document.getElementById('precio').value;
 
         if (!nombre || !fecha || !motivo) {
-            mostrarToast('Por favor rellena todos los campos', 'error'); 
+            mostrarToast('Faltan campos obligatorios', 'error'); 
             return;
         }
 
-        const datosCita = { nombre, fecha, motivo };
+        const datosCita = { nombre, fecha, motivo, precio };
 
         try {
-            let url = `${API_URL}/citas`;
-            let method = 'POST';
-
-            if (idEnEdicion) {
-                url = `${API_URL}/citas/${idEnEdicion}`;
-                method = 'PUT';
-            }
+            const url = idEnEdicion ? `${API_URL}/citas/${idEnEdicion}` : `${API_URL}/citas`;
+            const method = idEnEdicion ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Gafete de seguridad
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(datosCita)
             });
 
             const result = await response.json();
-
             if (result.success) {
-                mostrarToast(idEnEdicion ? 'Cita actualizada correctamente' : 'Cita agendada con éxito', 'success'); 
-                
+                mostrarToast(idEnEdicion ? 'Cita actualizada' : '✅ Cita agendada', 'success'); 
                 idEnEdicion = null; 
                 btnAdd.innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Agendar Cita';
                 btnAdd.style.backgroundColor = '#20c997';
                 apptForm.reset(); 
-                
-                cargarCitas(); // Recargar la lista
+                cargarCitas();
             } else {
-                mostrarToast(result.message || 'Error al guardar la cita', 'error');
+                mostrarToast(result.message, 'error');
             }
-        } catch (error) {
-            console.error(error);
-            mostrarToast('Error de conexión al guardar', 'error');
-        }
+        } catch (error) { mostrarToast('Error de conexión', 'error'); }
     });
     
-    // Cargar las citas apenas inicie el dashboard
     cargarCitas();
 }

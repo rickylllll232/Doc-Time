@@ -1,29 +1,37 @@
 const mongoose = require('mongoose');
 
 const CitaSchema = new mongoose.Schema({
+    // Nombre del paciente (obligatorio por validación)
     nombre: {
         type: String,
-        required: [true, 'El nombre del paciente es obligatorio']
+        required: [true, 'El nombre del paciente es obligatorio'],
+        trim: true
     },
+    // Fecha de la consulta
     fecha: {
         type: Date,
-        required: [true, 'La fecha y hora son obligatorias']
+        required: [true, 'La fecha es obligatoria']
     },
+    // Motivo de la visita
     motivo: {
         type: String,
-        required: [true, 'El motivo de la cita es obligatorio']
+        required: [true, 'El motivo es obligatorio']
     },
-    estado: {
-        type: String,
-        default: 'Pendiente',
-        enum: ['Pendiente', 'Completada', 'Cancelada'] // Opciones válidas
+    // CAMBIO CLAVE: Agregamos el campo precio
+    precio: {
+        type: Number,
+        default: 500 
     },
-    // Opcional: Para saber qué doctor/usuario creó la cita
-    usuario: {
+    // Referencia al usuario (Doctor) que crea la cita
+    user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: false 
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-}, { timestamps: true }); // timestamps crea automáticamente 'createdAt' y 'updatedAt'
+});
 
 module.exports = mongoose.model('Cita', CitaSchema);

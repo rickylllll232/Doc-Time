@@ -1,13 +1,13 @@
-// backend/config/db.js
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log(`🏥 Doc-Time DB Conectada: ${conn.connection.host}`);
+        // Si process.env.MONGO_URI no existe, usa la cadena de texto directamente
+        const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/doc-time');
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error(`Error de conexión DB: ${error.message}`);
-        process.exit(1); // Detiene el servidor si la base de datos falla
+        console.error(`Error: ${error.message}`);
+        // No salimos del proceso aquí para permitir que el log nos diga qué pasó
     }
 };
 
